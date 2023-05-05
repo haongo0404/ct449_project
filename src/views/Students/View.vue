@@ -70,7 +70,7 @@
         },
         deleteStudent(studentId){
             console.log(studentId)
-            if(confirm('ok?')){
+            if(confirm('Bạn chắc chắn muốn xoá?')){
                 axios.delete(`http://localhost:3000/api/contacts/${studentId}`)
                 .then(res=>{
                     alert(res.data.message);

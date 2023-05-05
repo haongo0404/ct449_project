@@ -63,6 +63,7 @@ export default {
                     name: '',
                     phone: ''
                 }
+                this.errorList='';
             })
             .catch(function (error) {
                     if(error.response) {
