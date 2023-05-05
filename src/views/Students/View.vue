@@ -30,7 +30,7 @@
                         <td><RouterLink :to="{ path: '/students/' +contacts._id+'/edit'}" class="btn btn-success float end">
                         Edit
                     </RouterLink>
-                    <button type="button" class="btn btn-danger">Delete</button>
+                    <button type="button" @click="deleteStudent(contacts._id)" class="btn btn-danger">Delete</button>
                 </td>
                     
                     </tr>
@@ -67,6 +67,31 @@
                 this.contacts=res.data
                 console.log(this.contacts);
             })
+        },
+        deleteStudent(studentId){
+            console.log(studentId)
+            if(confirm('ok?')){
+                axios.delete(`http://localhost:3000/api/contacts/${studentId}`)
+                .then(res=>{
+                    alert(res.data.message);
+                    this.getStudents();
+                })
+                .catch(function (error) {
+                    if(error.response) {
+                        if(error.response.status==422){
+                            mythis.errorList=error.response.data.errors;
+                        }
+                        if(error.response.status==404){
+                            mythis.errorList=error.response.data.message;
+                        }
+                    } else if (error.request) {
+                        console.log(error.request);
+                    } else {
+                        // Something happened in setting up the request that triggered an Error
+                        console.log('Error', error.message);
+                    }
+            })
+            }
         }
     }
   }

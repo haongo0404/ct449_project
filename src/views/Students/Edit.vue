@@ -27,7 +27,7 @@
                     <input type="text" class="form-control" v-model="model.contacts.phone" name="" id="" />
                 </div>
                 <div class="mb-3">
-                    <button type="button" @click="saveStudent" class="btn btn-primary">Luu</button>
+                    <button type="button" @click="updateStudent" class="btn btn-primary">Luu</button>
                 </div>
             </div>
         </div>
@@ -36,9 +36,11 @@
 <script>
 import axios from 'axios';
 export default {
-    name: 'studentsCreate',
+    name: 'studentsEdit',
+
     data() {
         return {
+            studentId:'',
             errorList: '',
             model: {
                 contacts: {
@@ -50,24 +52,33 @@ export default {
             }
         }
     },
+    mounted(){
+        //console.log(this.$route.params.id);
+        this.studentId=this.$route.params.id;
+        this.getStudentData(this.$route.params.id)
+    },
     methods:{
-        saveStudent() {
+        getStudentData(studentId){
+            axios.get(`http://localhost:3000/api/contacts/${studentId}`).then(res=>{
+                console.log(res.data)
+                this.model.contacts=res.data
+            });
+        },
+        updateStudent() {
             var mythis=this;
-            axios.post('http://localhost:3000/api/contacts', this.model.contacts)
+            axios.put(`http://localhost:3000/api/contacts/${this.studentId}`, this.model.contacts)
             .then(res => {
                 console.log(res.data)
                 alert(res.data.message);
-                this.model.contacts = {
-                    address: '',
-                    email: '',
-                    name: '',
-                    phone: ''
-                }
+                this.errorList='';
             })
             .catch(function (error) {
                     if(error.response) {
                         if(error.response.status==422){
                             mythis.errorList=error.response.data.errors;
+                        }
+                        if(error.response.status==404){
+                            mythis.errorList=error.response.data.message;
                         }
                     } else if (error.request) {
                         console.log(error.request);
